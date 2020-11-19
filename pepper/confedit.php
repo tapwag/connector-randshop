@@ -1,18 +1,21 @@
-<?
+<?php
 // $Id: confedit.php,v 0.10 2006/02/06 11:34:30 hli Exp $
-if (!isset($_SERVER['PHP_AUTH_USER'])) {
-       Header("WWW-Authenticate: Basic realm=\"Configurations-Editor\"");
-       Header("HTTP/1.0 401 Unauthorized");
-       echo "Sie m&uuml;ssen sich autentifizieren\n";
-       exit;
-} else {
-	include "conf.php";
+//if (!isset($_SERVER['PHP_AUTH_USER'])) {
+//       Header("WWW-Authenticate: Basic realm=\"Configurations-Editor\"");
+//       Header("HTTP/1.0 401 Unauthorized");
+//       echo "Sie m&uuml;ssen sich autentifizieren\n";
+//       exit;
+	include "./conf/conf.php";
 	require_once "DB.php";
-	$db=@DB::connect($ERPdns);
+	echo $datenbankname;
+	
+?>	
+<?php
+$db=@DB::connect($ERPdns);
 	if (!DB::isError($db)) {
 		$sql="select id,pricegroup from pricegroup";
 		$pgs=$db->getall($sql);
-	}
+	
 	function pg($sel) {
 	global $pgs;
 		echo "\t<option value=0";
@@ -27,9 +30,11 @@ if (!isset($_SERVER['PHP_AUTH_USER'])) {
     if ($_SERVER['PHP_AUTH_USER']<>$ERPftpuser || $_SERVER['PHP_AUTH_PW']<>$ERPftppwd) {
 		Header("WWW-Authenticate: Basic realm=\"My Realm\"");
 		Header("HTTP/1.0 401 Unauthorized");
-		echo "Sie m&uuml;ssen sich autentifizieren\n";
+		echo "Sie m&uuml;ssen sich authentifizieren\n";
 		exit;
-	}
+	
+	
+	
 	if ($_POST["ok"]=="sichern") {
 		$ok=true;
 		$dsnP="pgsql://".$_POST["ERPuser"].":".$_POST["ERPpass"]."@".$_POST["ERPhost"]."/".$_POST["ERPdbname"];
@@ -184,26 +189,26 @@ if (!isset($_SERVER['PHP_AUTH_USER'])) {
 <input type="hidden" name="treuhID" value="<?= $treuh["ID"] ?>">
 <input type="hidden" name="ERPusrID" value="<?= $ERPusr["ID"] ?>">
 
-<tr><th>Daten</th><th>Lx-ERP</th><th></th><th>Shop</th></tr>
+<tr><th>Daten</th><th>SQL Ledger</th><th></th><th><?php echo $datenbankname; ?></th></tr>
 <tr>
-	<td>db-Host</td>
+	<td>Datenbankhost</td>
 	<td colspan="2"><input type="text" name="ERPhost" size="25" value="<?= $ERPhost ?>"></td>
 	<td><input type="text" name="SHOPhost" size="25" value="<?= $SHOPhost ?>"></td>
 </tr>
 <tr>
-	<td>Database</td>
-	<td colspan="2"><input type="text" name="ERPdbname" size="20" value="<?= $ERPdbname ?>"></td>
-	<td><input type="text" name="SHOPdbname" size="20" value="<?= $SHOPdbname ?>"></td>
+	<td>Datenbank</td>
+	<td colspan="2"><input type="text" name="ERPdbname" size="25" value="<?= $ERPdbname ?>"></td>
+	<td><input type="text" name="SHOPdbname" size="25" value="<?= $datenbankname ?>"></td>
 </tr>
 <tr>
-	<td>db-User Name</td>
-	<td colspan="2"><input type="text" name="ERPuser" size="15" value="<?= $ERPuser ?>"></td>
-	<td><input type="text" name="SHOPuser" size="15" value="<?= $SHOPuser ?>"></td>
+	<td>Datenbankbenutzername</td>
+	<td colspan="2"><input type="text" name="ERPuser" size="25" value="<?= $ERPuser ?>"></td>
+	<td><input type="text" name="SHOPuser" size="25" value="<?= $SHOPuser ?>"></td>
 </tr>
 <tr>
 	<td>db-User PWD</td>
-	<td colspan="2"><input type="text" name="ERPpass" size="15" value="<?= $ERPpass ?>"></td>
-	<td><input type="text" name="SHOPpass" size="15" value="<?= $SHOPpass ?>"></td>
+	<td colspan="2"><input type="text" name="ERPpass" size="25" value="<?= $ERPpass ?>"></td>
+	<td><input type="text" name="SHOPpass" size="25" value="<?= $SHOPpass ?>"></td>
 </tr>
 <tr>
 	<td>User-ID</td>
@@ -291,12 +296,11 @@ if (!isset($_SERVER['PHP_AUTH_USER'])) {
 </tr-->
 
 
+?>
 
-
-<tr><td colspan="4" align="center"><input type="submit" name="ok" value="sichern"></td></tr>
+<tr><td colspan="4" align="center"><input type="submit" name="ok" value="Sichern"></td></tr>
 </form>
 </table>
 </center>
 </body>
 </html>
-<? } ?>
